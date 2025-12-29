@@ -1,4 +1,4 @@
-# reportfig: Universal Plot Wrapper for Quarto and PDF Export
+# reportfig: Universal plot wrapper for quarto rendering and figure export
 
 `reportfig` is a lightweight R package designed to streamline the workflow of rendering plots in Quarto documents while simultaneously exporting them to high-quality files (defaulting to PDF).
 
@@ -21,10 +21,8 @@ You can install the development version of `reportfig` from GitHub:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("user/reportfig")
+devtools::install_github("MLKaufman/reportfig)
 ```
-
-*(Note: Replace with actual repository path once hosted)*
 
 ## Usage
 
@@ -72,6 +70,3 @@ ggsave("plot.pdf", p)
 
 With `reportfig`, it becomes a single, clean call that handles the rendering logic for you regardless of the plotting library used.
 
-## License
-
-MIT
