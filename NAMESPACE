@@ -1,0 +1,4 @@
+export(reportfig)
+import(ggplot2)
+import(grDevices)
+import(grid)
