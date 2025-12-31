@@ -1,7 +1,7 @@
 Package: reportfig
 Title: Universal Plot Wrapper for Quarto and PDF Export
 Version: 0.1.0
-Authors@R: person("Antigravity", role = c("aut", "cre"), email = "antigravity@example.com")
+Authors@R: person("Michael Kaufman", role = c("aut", "cre"), email = "mikelkaufman@gmail.com")
 Description: A package to wrap any R plotting system and ensure it renders in Quarto while simultaneously saving to PDF (or other formats).
 License: MIT + file LICENSE
 Encoding: UTF-8
