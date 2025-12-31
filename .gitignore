@@ -1,4 +1,12 @@
+
+#RENV
+renv/
+
+# Other tests
+*.pdf
+
 # History files
+.Rprofile
 .Rhistory
 .Rapp.history
 
