@@ -21,8 +21,19 @@ You can install the development version of `reportfig` from GitHub:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("MLKaufman/reportfig)
+devtools::install_github("MLKaufman/reportfig")
 ```
+
+## Main Function Documentation
+
+```r
+reportfig <- function(plot_expr, # plot object or expression to render
+                      filename = NULL, # base filename for export (without extension)
+                      width = 7, # export width in inches
+                      height = 7, # export height in inches
+                      devices = "pdf", # vector of devices to export (e.g., c("pdf", "png"))
+                      ...)
+``` 
 
 ## Usage
 
@@ -69,4 +80,3 @@ ggsave("plot.pdf", p)
 ```
 
 With `reportfig`, it becomes a single, clean call that handles the rendering logic for you regardless of the plotting library used.
-
