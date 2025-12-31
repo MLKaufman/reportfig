@@ -31,13 +31,25 @@
 #' }
 reportfig <- function(plot_expr,
                       filename = NULL,
-                      width = 7,
-                      height = 7,
-                      devices = "pdf",
+                      width = getOption("reportfig.width", 7),
+                      height = getOption("reportfig.height", 7),
+                      devices = getOption("reportfig.devices", "pdf"),
+                      output_dir = getOption("reportfig.output_dir", NULL),
+                      res = getOption("reportfig.res", 300),
                       ...) {
     # 1. Capture the expression if it's not already an object
     # We use substitute to handle base R calls like reportfig(plot(1:10))
     expr <- substitute(plot_expr)
+
+    # 2. Handle default filename from knitr if possible
+    if (is.null(filename)) {
+        if (requireNamespace("knitr", quietly = TRUE)) {
+            label <- knitr::opts_current$get("label")
+            if (!is.null(label)) {
+                filename <- label
+            }
+        }
+    }
 
     # Function to render the plot
     render_plot <- function() {
@@ -56,11 +68,20 @@ reportfig <- function(plot_expr,
         }
     }
 
-    # 2. Render in the current device (e.g., Quarto/RStudio)
+    # 3. Render in the current device (e.g., Quarto/RStudio)
     render_plot()
 
-    # 3. Handle file export if filename is provided
+    # 4. Handle file export if filename is provided (or retrieved from knitr)
+    saved_paths <- character()
     if (!is.null(filename)) {
+        # Prepare output directory
+        if (!is.null(output_dir)) {
+            if (!dir.exists(output_dir)) {
+                dir.create(output_dir, recursive = TRUE)
+            }
+            filename <- file.path(output_dir, filename)
+        }
+
         for (dev_type in devices) {
             ext <- tolower(dev_type)
             full_filename <- paste0(filename, ".", ext)
@@ -78,7 +99,7 @@ reportfig <- function(plot_expr,
 
             # Units for raster formats
             if (ext %in% c("png", "jpeg", "jpg", "tiff")) {
-                dev_func(full_filename, width = width, height = height, units = "in", res = 300, ...)
+                dev_func(full_filename, width = width, height = height, units = "in", res = res, ...)
             } else {
                 dev_func(full_filename, width = width, height = height, ...)
             }
@@ -86,6 +107,7 @@ reportfig <- function(plot_expr,
             # Important: Capture errors during rendering to device to ensure dev.off() is called
             tryCatch({
                 render_plot()
+                saved_paths <- c(saved_paths, full_filename)
             }, finally = {
                 grDevices::dev.off()
             })
@@ -94,7 +116,11 @@ reportfig <- function(plot_expr,
         }
     }
 
-    # Return plot_expr invisibly if it's an object
+    # Return saved paths invisibly, or the plot object if no paths were saved
+    if (length(saved_paths) > 0) {
+        return(invisible(saved_paths))
+    }
+
     if (inherits(plot_expr, c(
         "ggplot", "trellis", "grob", "gtable",
         "RecordedPlot", "Heatmap", "HeatmapList",
